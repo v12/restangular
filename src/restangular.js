@@ -1,4 +1,16 @@
-(function () {
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+    return define(['lodash', 'angular'], function (_, angular) {
+      return factory(_, angular);
+    });
+  } else if (typeof exports === 'object') {
+    return module.exports = factory(require('lodash'), require('angular')).name;
+  } else {
+    return factory(_, angular);
+  }
+})(function (_, angular) {
+  if (!_)
+    throw new Error('Rastangular requires Lodash and it should be loaded first');
 
   var restangular = angular.module('restangular', []);
 
@@ -1345,8 +1357,7 @@
 
           for (var prop in collection) {
             if (collection.hasOwnProperty(prop) &&
-                _.isFunction(collection[prop]) &&
-                !_.contains(knownCollectionMethods, prop)) {
+                _.isFunction(collection[prop]) && !_.contains(knownCollectionMethods, prop)) {
               serv[prop] = _.bind(collection[prop], collection);
             }
           }
@@ -1386,4 +1397,5 @@
     }];
   });
 
-})();
+  return restangular;
+});
